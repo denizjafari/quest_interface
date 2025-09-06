@@ -1,0 +1,7 @@
+{
+    "selfDestroyTime": 10,
+    "warningTime": 8,
+    "scaling_factor": 2,
+    "ROMScale": 1,
+    "boundOnly": false
+}
