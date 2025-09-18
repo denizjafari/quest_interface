@@ -1,10 +1,14 @@
 using UnityEngine;
+using System;
 
 public class FallingTarget : MonoBehaviour
 {
     // Configs
     private float decayTime = 10;
     private float existing_timer = 0f;
+    private bool isHeld = false;
+    private GameObject cursor;
+    private GameObject basket;
 
     // Component References
     private SpriteRenderer spriteRenderer;
@@ -16,6 +20,8 @@ public class FallingTarget : MonoBehaviour
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         boxCenter = transform.position;
+        cursor = GameObject.Find("Cursor").gameObject;
+        basket = GameObject.Find("Basket").gameObject;
 
         // Load game difficulty config
         GameInitConfig config = Helper.LoadGameInitConfig();
@@ -33,20 +39,40 @@ public class FallingTarget : MonoBehaviour
         if (existing_timer > decayTime) {
             Destroy(gameObject);
         }
+
+        // Follow the cursor if player grabbed the apple
+        if (isHeld)
+        {
+            transform.position = cursor.transform.position;
+
+            // Let the object fall into the basket.
+            if (IsTargetOverBasket())
+            {
+                isHeld = false;
+                GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.None;
+            }
+        }
     }
 
     void OnBecameInvisible()
     {
-        ScoreManager.Instance.AddMiss(); // Decrement user score.
+        if (ScoreManager.Instance != null) ScoreManager.Instance.AddMiss(); // Decrement user score.
         Destroy(gameObject);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.collider.gameObject.name != "FallingTarget(Clone)" && collision.collider.gameObject.name != "FallingTarget")
+        if (collision.collider.gameObject.name == "Cursor" && !IsTargetOverBasket())
         {
-            Destroy(gameObject);
+            // The player "grabs" the apple, and this object should follow the cursor.
+            GetComponent<Rigidbody2D>().constraints = RigidbodyConstraints2D.FreezePositionY;
+            transform.position = collision.transform.position;
+            isHeld = true;
+        }
+        else if (collision.collider.gameObject.name == "Basket")
+        {
             ScoreManager.Instance.AddScore();
+            Destroy(gameObject);
         }
     }
 
@@ -87,5 +113,17 @@ public class FallingTarget : MonoBehaviour
         {
             return new Vector2(1, 1);
         }
+    }
+
+    /// <summary>
+    ///     Check and return a bool if this object's position is hovering over the basket.
+    /// </summary>
+    bool IsTargetOverBasket()
+    {
+        Collider2D collider = GetComponent<Collider2D>(), basketCollider = basket.GetComponent<Collider2D>();
+        float xCenter = collider.bounds.center.x, xMin = basketCollider.bounds.min.x, xMax = basketCollider.bounds.max.x;
+
+        // Add a bit of buffer space for it to be easier to drop the apple into the basket
+        return xCenter < xMax - 0.2 && xCenter > xMin + 0.2;
     }
 }

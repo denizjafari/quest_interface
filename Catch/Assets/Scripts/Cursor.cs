@@ -13,11 +13,17 @@ public class UnityServer : MonoBehaviour // This class is associated with the ga
     private TcpClient tcpClient;
     private NetworkStream stream;
     private Camera mainCamera;
-    private float ROMScale; // A game parameter that controlls how sensitive is the game object to user's input.
+    private float ROMScale; // A game parameter that controls how sensitive is the game object to user's input.
+    private GameObject basket;
+
+    [Header("Editor Parameters")]   // Must be added in the Editor
+    [SerializeField] Sprite openHandSprite;
+    [SerializeField] Sprite closedHandSprite;
 
     void Start()
     {
         mainCamera = Camera.main; // This is camera in unity game. Not your computer camera
+        basket = GameObject.Find("Basket").gameObject; // Find the basket in the scene
         StartServer(); // Let's goo, server start.
 
         // Load game difficulty config
@@ -41,6 +47,17 @@ public class UnityServer : MonoBehaviour // This class is associated with the ga
             tcpClient = tcpListener.AcceptTcpClient();
             stream = tcpClient.GetStream();
             StartCoroutine(ReceiveData());
+        }
+
+        // Check if the cursor should be dropping the apple
+        if (IsTargetOverBasket())
+        {
+            GetComponent<Collider2D>().isTrigger = true;
+            GetComponent<SpriteRenderer>().sprite = openHandSprite;
+        }
+        else
+        {
+            GetComponent<Collider2D>().isTrigger = false;
         }
     }
 
@@ -77,5 +94,25 @@ public class UnityServer : MonoBehaviour // This class is associated with the ga
         if (stream != null) stream.Close();
         if (tcpClient != null) tcpClient.Close();
         if (tcpListener != null) tcpListener.Stop();
+    }
+
+
+    /// <summary>
+    ///     Check and return a bool if this object's position is hovering over the basket.
+    /// </summary>
+    bool IsTargetOverBasket()
+    {
+        Collider2D collider = GetComponent<Collider2D>(), basketCollider = basket.GetComponent<Collider2D>();
+        float xCenter = collider.bounds.center.x, xMin = basketCollider.bounds.min.x, xMax = basketCollider.bounds.max.x;
+
+        return xCenter < xMax && xCenter > xMin;
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.collider.gameObject.name == "FallingTarget(Clone)")
+        {
+            GetComponent<SpriteRenderer>().sprite = closedHandSprite;
+        }
     }
 }

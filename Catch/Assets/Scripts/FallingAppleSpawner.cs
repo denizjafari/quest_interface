@@ -1,4 +1,6 @@
+using System.Collections;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class FallingAppleSpawner : MonoBehaviour
 {
@@ -8,6 +10,7 @@ public class FallingAppleSpawner : MonoBehaviour
 
     [Header("Gameplay Parameters")]
     [SerializeField] int counter = 0;   // Used to determine where to spawn the next apple.
+    [SerializeField] float spawnLag = 2f;
 
     // Config Variables
     private float scaling_factor;
@@ -15,6 +18,7 @@ public class FallingAppleSpawner : MonoBehaviour
     private float ROMScale;
     private float maxArmRotation;
     private float minArmRotation;
+    private bool isSpawning = false;
 
     // Component References
     private GameObject currentBox; // To keep track of the existing box
@@ -53,16 +57,13 @@ public class FallingAppleSpawner : MonoBehaviour
         // Update parameter based on controller input
         scaling_factor = ControllerListener.Instance.scaling_factor;
 
-        // Can be null if either user successfully reached for the box or the box naturally decays.
-        if (currentBox == null)
+        // Prepare the next spawn location
+        if (currentBox == null && !isSpawning)
         {
-            // Remove the existing hint box
-            if (hintBox) Destroy(hintBox);
-
-            currentBox = SpawnBox(nextTargetPosition); // Go spawn a box that the position of the previous hint object
-
+            isSpawning = true;
+            StartCoroutine(DelaySpawnRoutine(nextTargetPosition));
+            //currentBox = SpawnBox(nextTargetPosition);
             nextTargetPosition = ComputeNextTargetPosition();
-            SpawnHint(new Vector3(nextTargetPosition.x, 0));  // Hint should be set to the middle of the screen.
         }
     }
 
@@ -123,6 +124,14 @@ public class FallingAppleSpawner : MonoBehaviour
         GameObject newBox = Instantiate(boxPrefab, position, Quaternion.identity);
         newBox.transform.localScale = new Vector3(0.4f * scaling_factor, 0.4f * scaling_factor, 1);
         return newBox;
+    }
+
+    IEnumerator DelaySpawnRoutine(Vector3 position)
+    {
+        yield return new WaitForSeconds(spawnLag);
+        currentBox = Instantiate(boxPrefab, position, Quaternion.identity);
+        currentBox.transform.localScale = new Vector3(0.4f * scaling_factor, 0.4f * scaling_factor, 1);
+        isSpawning = false;
     }
 }
 
