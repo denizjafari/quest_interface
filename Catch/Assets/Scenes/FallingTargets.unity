@@ -468,6 +468,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -3999474786293148213, guid: 43dfc0ba1a0c3304fb24a6248911400f, type: 3}
+      propertyPath: spawnLag
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: -3999474786293148213, guid: 43dfc0ba1a0c3304fb24a6248911400f, type: 3}
       propertyPath: boxPrefab
       value: 
       objectReference: {fileID: 7198678647446075495, guid: 056111283f4b6414090321e7a9dd490e, type: 3}

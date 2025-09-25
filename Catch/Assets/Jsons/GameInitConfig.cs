@@ -6,4 +6,5 @@ public class GameInitConfig
     public float scaling_factor;
     public float ROMScale;
     public bool boundOnly;
+    public float spawnLag;
 }

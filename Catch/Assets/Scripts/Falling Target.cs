@@ -1,5 +1,6 @@
 using UnityEngine;
 using System;
+using System.Collections;
 
 public class FallingTarget : MonoBehaviour
 {
@@ -125,5 +126,25 @@ public class FallingTarget : MonoBehaviour
 
         // Add a bit of buffer space for it to be easier to drop the apple into the basket
         return xCenter < xMax - 0.2 && xCenter > xMin + 0.2;
+    }
+
+    /// <summary>
+    /// Fades in the target, automatically starting the apple to be invisible.
+    /// </summary>
+    /// <param name="fadeDuration">The seconds to fade the target in.</param>
+    /// <returns></returns>
+    public IEnumerator FadeIn(float fadeDuration)
+    {   
+        Renderer renderer = GetComponent<Renderer>();
+        Color finalColor = renderer.material.color;
+        Color initalColor = new Color(finalColor.r, finalColor.g, finalColor.b, 0f);
+
+        float timeElapsed = 0f;
+        while (timeElapsed < fadeDuration)
+        {
+            timeElapsed += Time.deltaTime;
+            renderer.material.color = Color.Lerp(initalColor, finalColor, timeElapsed / fadeDuration);
+            yield return null;
+        }
     }
 }

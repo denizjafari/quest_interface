@@ -2,6 +2,9 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UIElements;
 
+/// <summary>
+/// Controls the logic from which the apples spawn and fall.
+/// </summary>
 public class FallingAppleSpawner : MonoBehaviour
 {
     [Header("Prefab Parameters")]
@@ -21,8 +24,8 @@ public class FallingAppleSpawner : MonoBehaviour
     private bool isSpawning = false;
 
     // Component References
-    private GameObject currentBox; // To keep track of the existing box
-    private GameObject hintBox; // To display the hint for the next box
+    private GameObject currentBox;      // To keep track of the existing box
+    private GameObject hintBox;         // To display the hint for the next box
     private Vector3 nextTargetPosition; // To store the position of the next box
 
     // Start is called before the first frame update
@@ -33,6 +36,7 @@ public class FallingAppleSpawner : MonoBehaviour
         scaling_factor = config.scaling_factor;
         boundOnly = config.boundOnly;
         ROMScale = config.ROMScale;
+        if (config.spawnLag != 0) spawnLag = config.spawnLag;           // TEMPORARY FIX. MUST UPDATE JSONS
 
         // Load the player's max/min arm rotation and screen boundaries.
         ROMData rotationConfig = Helper.LoadShoulderRotationROM();
@@ -126,11 +130,23 @@ public class FallingAppleSpawner : MonoBehaviour
         return newBox;
     }
 
+    
+
+    /// <summary>
+    /// Spawn the next apple, then starts a coroutine to turn...
+    /// </summary>
+    /// <param name="position"></param>
+    /// <returns></returns>
     IEnumerator DelaySpawnRoutine(Vector3 position)
     {
-        yield return new WaitForSeconds(spawnLag);
         currentBox = Instantiate(boxPrefab, position, Quaternion.identity);
         currentBox.transform.localScale = new Vector3(0.4f * scaling_factor, 0.4f * scaling_factor, 1);
+        currentBox.GetComponent<Rigidbody2D>().gravityScale = 0.0f;
+
+        StartCoroutine(currentBox.GetComponent<FallingTarget>().FadeIn(spawnLag));
+        yield return new WaitForSeconds(spawnLag);
+
+        currentBox.GetComponent<Rigidbody2D>().gravityScale = 1f;
         isSpawning = false;
     }
 }
