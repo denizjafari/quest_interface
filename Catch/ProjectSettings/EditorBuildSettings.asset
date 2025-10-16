@@ -8,7 +8,9 @@ EditorBuildSettings:
   - enabled: 0
     path: Assets/Scenes/SampleScene.unity
     guid: 2cda990e2423bbf4892e6590ba056729
-  - enabled: 1
+  - enabled: 0
     path: Assets/Scenes/FallingTargets.unity
     guid: 3537cb00fc528754085c54af390280fc
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.xr.management.loader_settings: {fileID: 11400000, guid: 2f00b9c0294d74644a28ef6fb4a13ca1, type: 2}
+    com.unity.xr.openxr.settings4: {fileID: 11400000, guid: 4af7dcd6de654074a82679399550d8bf, type: 2}
