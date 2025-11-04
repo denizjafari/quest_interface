@@ -5,8 +5,10 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 
-/// This class listens to localhost port 5001. When it receives new data, it updates class variables, such that
-/// other files can access the most recent game parameters through this class.
+/// <summary>
+/// This class listens to localhost port 5001. When it receives new data, it updates class variables, 
+/// such that other files can access the most recent game parameters through this class.
+/// </summary>
 public class ControllerListener : MonoBehaviour
 {
     // Some boilerplate code for setting up the server.
