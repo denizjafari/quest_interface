@@ -275,9 +275,11 @@ MonoBehaviour:
   m_Name: Android
   m_EditorClassIdentifier: 
   features:
+  - {fileID: 507409148823511402}
   - {fileID: -4503645075191862209}
   - {fileID: 5707073100939298805}
   - {fileID: -7431535514328721022}
+  - {fileID: 5268289816966965225}
   - {fileID: -6819260598421555169}
   - {fileID: -4209712244486866504}
   - {fileID: -443201579194194348}
@@ -297,7 +299,7 @@ MonoBehaviour:
   - {fileID: -268020098573373936}
   - {fileID: 7427770763423304332}
   m_renderMode: 1
-  m_latencyOptimization: 0
+  m_latencyOptimization: 1
   m_autoColorSubmissionMode: 1
   m_colorSubmissionModes:
     m_List: 00000000
@@ -352,8 +354,8 @@ MonoBehaviour:
     XR_META_hand_tracking_microgestures XR_META_spatial_entity_persistence XR_META_spatial_entity_discovery
     XR_META_boundary_visibility XR_META_face_tracking_visemes XR_META_headset_id
     XR_FB_composition_layer_settings XR_META_automatic_layer_filter XR_METAX1_spatial_entity_marker
-    XR_EXT_future XR_EXTX2_stationary_reference_space XR_META_recommended_layer_resolution
-    XR_EXT_local_floor '
+    XR_META_environment_raycast XR_EXT_future XR_EXTX2_stationary_reference_space
+    XR_META_recommended_layer_resolution XR_EXT_local_floor '
   company: Meta
   priority: 0
   required: 0
@@ -440,8 +442,8 @@ MonoBehaviour:
     XR_META_hand_tracking_microgestures XR_META_spatial_entity_persistence XR_META_spatial_entity_discovery
     XR_META_boundary_visibility XR_META_face_tracking_visemes XR_META_headset_id
     XR_FB_composition_layer_settings XR_META_automatic_layer_filter XR_METAX1_spatial_entity_marker
-    XR_EXT_future XR_EXTX2_stationary_reference_space XR_META_recommended_layer_resolution
-    XR_EXT_local_floor '
+    XR_META_environment_raycast XR_EXT_future XR_EXTX2_stationary_reference_space
+    XR_META_recommended_layer_resolution XR_EXT_local_floor '
   company: Meta
   priority: 0
   required: 0
@@ -658,11 +660,11 @@ MonoBehaviour:
   m_Name: SpaceWarpFeature Android
   m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.SpaceWarpFeature
   m_enabled: 0
-  nameUi: 
-  version: 
-  featureIdInternal: 
-  openxrExtensionStrings: 
-  company: 
+  nameUi: Application SpaceWarp
+  version: 1.0.0
+  featureIdInternal: com.unity.openxr.feature.spacewarp
+  openxrExtensionStrings: XR_FB_space_warp
+  company: Unity
   priority: 0
   required: 0
   m_UseRightHandedNDC: 0
@@ -860,11 +862,13 @@ MonoBehaviour:
   m_Name: FoveatedRenderingFeature Android
   m_EditorClassIdentifier: Unity.XR.OpenXR::UnityEngine.XR.OpenXR.Features.FoveatedRenderingFeature
   m_enabled: 0
-  nameUi: 
-  version: 
-  featureIdInternal: 
-  openxrExtensionStrings: 
-  company: 
+  nameUi: Foveated Rendering
+  version: 1
+  featureIdInternal: com.unity.openxr.feature.foveatedrendering
+  openxrExtensionStrings: XR_UNITY_foveation XR_FB_foveation XR_FB_foveation_configuration
+    XR_FB_swapchain_update_state XR_FB_foveation_vulkan XR_META_foveation_eye_tracked
+    XR_META_vulkan_swapchain_create_info
+  company: Unity
   priority: 0
   required: 0
 --- !u!114 &5298830659176186557
@@ -880,10 +884,10 @@ MonoBehaviour:
   m_Name: Standalone
   m_EditorClassIdentifier: 
   features:
-  - {fileID: -910472402508682203}
   - {fileID: -5896958658054789477}
   - {fileID: -1218667764749971731}
   - {fileID: -4508533660487740780}
+  - {fileID: -910472402508682203}
   - {fileID: 3947407388561252104}
   - {fileID: 1784975885185085141}
   - {fileID: -4424331187822910367}
