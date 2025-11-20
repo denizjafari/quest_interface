@@ -18,8 +18,8 @@ public class VRAppleSpawner : MonoBehaviour
     private bool isSpawning = false;
 
     // Component References
-    private GameObject currentApple;                                // To keep track of the existing apple.
-    private Vector3 nextTargetPosition = new Vector3(0, 1, 0.5f);   // To store the position of the next box
+    private GameObject currentApple;       // To keep track of the existing apple.
+    private Vector3 nextTargetPosition;    // To store the position of the next box
 
     [Header("Configs")]
     [Tooltip("Interval in seconds between apple spawns.")]
@@ -109,7 +109,7 @@ public class VRAppleSpawner : MonoBehaviour
         //    x = 1f;
         //}
 
-        return new Vector3(0f, 3f, 0.5f);
+        return new Vector3(0f, 2f, 0.5f);
     }
 
 

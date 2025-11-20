@@ -3,8 +3,14 @@ using UnityEngine;
 
 public class VRApple : MonoBehaviour
 {
+    
+    [Tooltip("How long in seconds the apple can exist.")]
+    [SerializeField] float decayTime = 3f;
+
+    [Header("Debug")]
+    [SerializeField] bool verbose = false;
+
     // Configs
-    private float decayTime = 3f;
     private float existing_timer = 0f;
     private bool isHeld = false;
     private GameObject cursor;
@@ -19,12 +25,11 @@ public class VRApple : MonoBehaviour
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         boxCenter = transform.position;
-        //cursor = GameObject.Find("Cursor").gameObject;
         basket = GameObject.Find("Basket").gameObject;
 
         // Load game difficulty config
         GameInitConfig config = Helper.LoadGameInitConfig();
-        decayTime = config.selfDestroyTime;
+        decayTime = config.selfDestroyTime != 0 ? config.selfDestroyTime : decayTime;
     }
 
     // Update is called once per frame
