@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class VRApple : MonoBehaviour
 {
-    
+    #region Class Variables
     [Tooltip("How long in seconds the apple can exist.")]
     [SerializeField] float decayTime = 8f;
 
@@ -18,7 +18,9 @@ public class VRApple : MonoBehaviour
 
     // Component References
     private Vector3 boxCenter;
+    #endregion
 
+    #region Unity Base Functions
     // Start is called before the first frame update
     void Start()
     {
@@ -38,22 +40,10 @@ public class VRApple : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-
-        // Follow the cursor if player grabbed the apple
-        if (isHeld)
-        {
-            transform.position = cursor.transform.position;
-        }
     }
 
     void FixedUpdate()
     {
-        // Let the object fall into the basket.
-        if (isHeld && IsTargetOverBasket())
-        {
-            isHeld = false;
-            GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
-        }
     }
 
 
@@ -72,8 +62,13 @@ public class VRApple : MonoBehaviour
             Destroy(gameObject);
         }
     }
+    #endregion
 
-
+    #region Methods
+    
+    /// <summary>
+    /// Explicitly Destroy the apple on timeout.
+    /// </summary>
     void DespawnApple()
     {
         if (isVerbose) Debug.Log("Apple Timed Out");
@@ -114,4 +109,5 @@ public class VRApple : MonoBehaviour
             yield return null;
         }
     }
+    #endregion
 }

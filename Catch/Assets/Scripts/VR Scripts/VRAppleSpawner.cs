@@ -8,6 +8,7 @@ using UnityEngine.UIElements;
 /// </summary>
 public class VRAppleSpawner : MonoBehaviour
 {
+    #region Class Variables
     // Internal Variables
     private float scaling_factor;
     private bool boundOnly;
@@ -29,8 +30,11 @@ public class VRAppleSpawner : MonoBehaviour
     [Header("Prefabs")]
     [Tooltip("The object the player needs to catch.")]
     [SerializeField] GameObject applePrefab;                        // Initialize in editor
+    #endregion
+
     public static VRAppleSpawner Instance { get; private set; }
 
+    #region Unity Base Functions
     // Start is called before the first frame update
     void Start()
     {
@@ -78,8 +82,10 @@ public class VRAppleSpawner : MonoBehaviour
         //    Invoke(nameof(SpawnApple), spawnLag);
         //}
     }
+    #endregion
 
-    
+
+    #region Methods
     void SpawnApple()
     {
         nextTargetPosition = ComputeNextTargetPosition();
@@ -142,4 +148,5 @@ public class VRAppleSpawner : MonoBehaviour
 
         //currentApple.GetComponent<Rigidbody>().useGravity = true;
     }
+    #endregion
 }
