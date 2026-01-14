@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +7,7 @@ using UnityEngine.UIElements;
 /// <summary>
 /// Spawns Falling Apples in a 3D VR environment.
 /// </summary>
-public class VRAppleSpawner : MonoBehaviour
+public class VRAppleSpawner : Singleton<VRAppleSpawner>
 {
     #region Class Variables
     // Internal Variables
@@ -32,7 +33,9 @@ public class VRAppleSpawner : MonoBehaviour
     [SerializeField] GameObject applePrefab;                        // Initialize in editor
     #endregion
 
-    public static VRAppleSpawner Instance { get; private set; }
+    #region Events
+    public static event Action OnSpawnApple;
+    #endregion
 
     #region Unity Base Functions
     // Start is called before the first frame update
@@ -75,6 +78,11 @@ public class VRAppleSpawner : MonoBehaviour
             isSpawning = true;
             SpawnApple();
         }
+
+        if (Time.fixedDeltaTime % 1f == 0)
+        {
+            Debug.Log(Time.fixedDeltaTime);
+        }
         //if (!isSpawning)
         //{
         //    if (isVerbose) Debug.Log("Spawning Apple");
@@ -91,6 +99,8 @@ public class VRAppleSpawner : MonoBehaviour
         nextTargetPosition = ComputeNextTargetPosition();
         StartCoroutine(DelaySpawnRoutine(nextTargetPosition));
         isSpawning = false;
+
+        OnSpawnApple?.Invoke();
     }
     
     

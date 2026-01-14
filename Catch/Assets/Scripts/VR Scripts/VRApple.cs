@@ -40,6 +40,10 @@ public class VRApple : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (isHeld && IsTargetOverBasket())
+        {
+            // Release the target and drop it.
+        }
     }
 
     void FixedUpdate()
@@ -99,7 +103,7 @@ public class VRApple : MonoBehaviour
     {
         Renderer renderer = GetComponent<Renderer>();
         Color finalColor = renderer.material.color;
-        Color initalColor = new(finalColor.r, finalColor.g, finalColor.b, 0f);
+        Color initalColor = new(finalColor.r, finalColor.g, finalColor.b, 0.5f);
 
         float timeElapsed = 0f;
         while (timeElapsed < fadeDuration)
