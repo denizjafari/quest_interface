@@ -1,8 +1,6 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 /// <summary>
 /// Spawns Falling Apples in a 3D VR environment.
@@ -11,12 +9,7 @@ public class VRAppleSpawner : Singleton<VRAppleSpawner>
 {
     #region Class Variables
     // Internal Variables
-    private float scaling_factor;
-    private bool boundOnly;
-    private float ROMScale;
     private int counter;                // Used to determine which side to spawn next apple.
-    private float maxArmRotation;
-    private float minArmRotation;
     private bool isSpawning = false;
 
     // Component References
@@ -41,29 +34,6 @@ public class VRAppleSpawner : Singleton<VRAppleSpawner>
     // Start is called before the first frame update
     void Start()
     {
-        // Load game difficulty parameters
-        GameInitConfig config = Helper.LoadGameInitConfig();
-        scaling_factor = config.scaling_factor != 0 ?
-            config.scaling_factor :
-            ControllerListener.Instance.scaling_factor;
-        boundOnly = config.boundOnly;
-        ROMScale = config.ROMScale;
-        spawnLag = config.spawnLag != 0 ? config.spawnLag : spawnLag;       // TEMPORARY FIX. MUST UPDATE JSONS
-
-        // TODO: Determine a way to limit rotation.
-        // Load the player's max/min arm rotation and screen boundaries.
-        ROMData rotationConfig = Helper.LoadShoulderRotationROM();
-        if (rotationConfig != null)
-        {
-            maxArmRotation = rotationConfig.max / 90f * Camera.main.orthographicSize * Camera.main.aspect * ROMScale;
-            minArmRotation = rotationConfig.min / 90f * Camera.main.orthographicSize * Camera.main.aspect * ROMScale;
-        }
-        else
-        {
-            maxArmRotation = 1f * Camera.main.orthographicSize * Camera.main.aspect * ROMScale;
-            minArmRotation = -1f * Camera.main.orthographicSize * Camera.main.aspect * ROMScale;
-        }
-
         SpawnApple();
     }
 
@@ -78,13 +48,6 @@ public class VRAppleSpawner : Singleton<VRAppleSpawner>
             isSpawning = true;
             SpawnApple();
         }
-
-        //if (!isSpawning)
-        //{
-        //    if (isVerbose) Debug.Log("Spawning Apple");
-        //    isSpawning = true;
-        //    Invoke(nameof(SpawnApple), spawnLag);
-        //}
     }
     #endregion
 
@@ -146,7 +109,6 @@ public class VRAppleSpawner : Singleton<VRAppleSpawner>
     IEnumerator DelaySpawnRoutine(Vector3 position)
     {
         currentApple = Instantiate(applePrefab, position, Quaternion.identity);
-        //currentApple.transform.localScale = new Vector3(0.4f * scaling_factor, 0.4f * scaling_factor, 1);
         currentApple.GetComponent<Rigidbody>().useGravity = false;
 
         StartCoroutine(currentApple.GetComponent<VRApple>().FadeIn(spawnLag));

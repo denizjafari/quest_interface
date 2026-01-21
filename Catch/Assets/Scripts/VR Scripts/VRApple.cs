@@ -1,52 +1,60 @@
 using System.Collections;
 using UnityEngine;
 
+using Oculus.Interaction.Grab;
+using Oculus.Interaction.GrabAPI;
+using Oculus.Interaction.Input;
+
+[RequireComponent(typeof(Collider), typeof(Renderer), typeof(Rigidbody))]
+[RequireComponent(typeof(Transform))]
 public class VRApple : MonoBehaviour
 {
-    #region Class Variables
-    [Tooltip("How long in seconds the apple can exist.")]
-    [SerializeField] float decayTime = 8f;
-
+    #region ----- Class Variables ------
     [Header("Debug")]
     [SerializeField] bool isVerbose = false;
 
-    // Configs
-    private float existing_timer = 0f;
+    // State Variables
+    private float appleLifespan;
     private bool isHeld = false;
-    private GameObject basket;
 
     // Component References
     private Vector3 boxCenter;
+    private Rigidbody rb;
+    private GameObject basket;
     #endregion
 
     #region ----- Unity Base Functions -----
-    // Start is called before the first frame update
     void Start()
     {
-        boxCenter = transform.position;
+        // Get relevant config information
+        appleLifespan = CatchVRGameManager.Instance.FruitLifespan;
+
+        // Get Component References
+        rb = gameObject.GetComponent<Rigidbody>();
         basket = GameObject.Find("Basket");
+        boxCenter = transform.position;
 
-        // Load game difficulty config
-        GameInitConfig config = Helper.LoadGameInitConfig();
-
-        decayTime = ControllerListener.Instance.selfDestroyTime != 0 ?
-            ControllerListener.Instance.selfDestroyTime :
-            decayTime;
-
-        Invoke(nameof(DespawnApple), decayTime);
+        Invoke(nameof(TimeoutApple), appleLifespan);
     }
 
-    // Update is called once per frame
-    void Update()
+
+    private void Update()
     {
-        if (isHeld && IsTargetOverBasket())
-        {
-            // Release the target and drop it.
-        }
+        CheckAppleHeldState();
     }
+
 
     void FixedUpdate()
     {
+        if (isHeld && !IsTargetOverBasket())
+        {
+            rb.useGravity = false;
+            FollowController();
+        }
+        else
+        {
+            rb.useGravity = true;
+        }
     }
 
 
@@ -59,22 +67,19 @@ public class VRApple : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.gameObject.name == "Basket")
-        {
-            ScoreManager.Instance.AddScore();
-            Destroy(gameObject);
-        }
+        if (collision.collider.gameObject.name == "Basket") DespawnApple(true);
     }
     #endregion
 
-    #region Methods
-    
+    #region ------ State Management ------
     /// <summary>
-    /// Explicitly Destroy the apple on timeout.
+    /// Prepares the apple to be despawned and determine whether it is a
+    /// successful score or not.
     /// </summary>
-    void DespawnApple()
+    /// <param name="isScoring">True if success, false otherwise.</param>
+    void DespawnApple(bool isScoring)
     {
-        if (isVerbose) Debug.Log("Apple Timed Out");
+        CatchVRGameManager.HandleScoreUpdate(isScoring);
         Destroy(gameObject);
     }
 
@@ -85,7 +90,8 @@ public class VRApple : MonoBehaviour
     /// <returns>Boolean representing if this object is over a basket.</returns>
     bool IsTargetOverBasket()
     {
-        Collider collider = GetComponent<Collider>(), basketCollider = basket.GetComponent<Collider>();
+        Collider collider = GetComponent<Collider>();
+        Collider basketCollider = basket.GetComponent<Collider>();
         float xCenter = collider.bounds.center.x, xMin = basketCollider.bounds.min.x, xMax = basketCollider.bounds.max.x;
 
         // Add a bit of buffer space for it to be easier to drop the apple into the basket
@@ -93,6 +99,46 @@ public class VRApple : MonoBehaviour
     }
 
 
+    /// <summary>
+    /// checks to see if the apple is considered held or not and sets isHeld accordingly.
+    /// </summary>
+    void CheckAppleHeldState()
+    {
+        if (IsTargetOverBasket())
+        {
+            isHeld = false;
+            return;
+        }
+        // TODO: If the apple is overlapping with the hands, set isHeld to true;
+        else if (false)
+        {
+
+        }
+        else
+        {
+            isHeld = false;
+        }
+        
+    }
+
+
+    /// <summary>
+    /// Helper function to have this gameObject follow the controller.
+    /// </summary>
+    void FollowController()
+    {
+        // TODO: Find the controller's position and update the object's position to it.
+    }
+
+
+    void TimeoutApple()
+    {
+        if (isVerbose) Debug.Log("[VRApple] Apple has timed out.");
+        DespawnApple(false);
+    }
+    #endregion
+
+    #region ------ Animation Functions ------
     /// <summary>
     /// Fades in the target, automatically starting the apple to be invisible.
     /// </summary>
