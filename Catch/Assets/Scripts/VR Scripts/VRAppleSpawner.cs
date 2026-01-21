@@ -79,10 +79,6 @@ public class VRAppleSpawner : Singleton<VRAppleSpawner>
             SpawnApple();
         }
 
-        if (Time.fixedDeltaTime % 1f == 0)
-        {
-            Debug.Log(Time.fixedDeltaTime);
-        }
         //if (!isSpawning)
         //{
         //    if (isVerbose) Debug.Log("Spawning Apple");
@@ -139,7 +135,7 @@ public class VRAppleSpawner : Singleton<VRAppleSpawner>
         }
 
         counter++;
-        return new Vector3(x, 1f, 0.5f);
+        return new Vector3(x, 2f, 0.5f);
     }
 
 
@@ -151,12 +147,12 @@ public class VRAppleSpawner : Singleton<VRAppleSpawner>
     {
         currentApple = Instantiate(applePrefab, position, Quaternion.identity);
         //currentApple.transform.localScale = new Vector3(0.4f * scaling_factor, 0.4f * scaling_factor, 1);
-        //currentApple.GetComponent<Rigidbody>().useGravity = false;
+        currentApple.GetComponent<Rigidbody>().useGravity = false;
 
         StartCoroutine(currentApple.GetComponent<VRApple>().FadeIn(spawnLag));
         yield return new WaitForSeconds(spawnLag);
 
-        //currentApple.GetComponent<Rigidbody>().useGravity = true;
+        currentApple.GetComponent<Rigidbody>().useGravity = true;
     }
     #endregion
 }

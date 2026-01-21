@@ -13,14 +13,13 @@ public class VRApple : MonoBehaviour
     // Configs
     private float existing_timer = 0f;
     private bool isHeld = false;
-    private GameObject cursor;
     private GameObject basket;
 
     // Component References
     private Vector3 boxCenter;
     #endregion
 
-    #region Unity Base Functions
+    #region ----- Unity Base Functions -----
     // Start is called before the first frame update
     void Start()
     {
