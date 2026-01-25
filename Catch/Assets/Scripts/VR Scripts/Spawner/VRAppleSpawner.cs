@@ -1,4 +1,4 @@
-using System;
+using Oculus.Interaction.HandGrab;
 using System.Collections;
 using UnityEngine;
 
@@ -17,34 +17,32 @@ public class VRAppleSpawner : Singleton<VRAppleSpawner>
     private Vector3 nextTargetPosition;    // To store the position of the next box
 
     [Header("Configs")]
-    [Tooltip("Interval in seconds between apple spawns.")]
+    [Tooltip("Set by CatchVRGameManager. Defaults to this value otherwise.")]
     [SerializeField] float spawnLag = 3f;
     [SerializeField] bool isVerbose = false;
 
     [Header("Prefabs")]
     [Tooltip("The object the player needs to catch.")]
-    [SerializeField] GameObject applePrefab;                        // Initialize in editor
-    #endregion
+    [SerializeField] GameObject applePrefab;            // Initialize in editor
 
-    #region Events
-    public static event Action OnSpawnApple;
+    [Tooltip("Should be the spawnpoint in the tree objects.")]
+    [SerializeField] Transform spawnTransformLeft;      // Position to spawn the left position target
+    [SerializeField] Transform spawnTransformRight;     // Position to spawn the right position target
     #endregion
 
     #region Unity Base Functions
     // Start is called before the first frame update
     void Start()
     {
-        SpawnApple();
+        if (CatchVRGameManager.Instance != null) spawnLag = CatchVRGameManager.Instance.SpawnInterval;
     }
 
 
     // Update is called once per frame
     void Update()
     {
-        // Prepare the next spawn location
         if (!isSpawning && currentApple == null)
         {
-            if (isVerbose) Debug.Log("Spawning Apple");
             isSpawning = true;
             SpawnApple();
         }
@@ -55,50 +53,38 @@ public class VRAppleSpawner : Singleton<VRAppleSpawner>
     #region Methods
     void SpawnApple()
     {
+        if (isVerbose) Debug.Log("[VRAppleSpawner] Spawning Apple");
+
         nextTargetPosition = ComputeNextTargetPosition();
-        StartCoroutine(DelaySpawnRoutine(nextTargetPosition));
+        currentApple = Instantiate(applePrefab, nextTargetPosition, Quaternion.identity);
         isSpawning = false;
 
-        OnSpawnApple?.Invoke();
+        //StartCoroutine(DelaySpawnRoutine(currentApple));
+        CatchVRGameManager.HandleSpawnApple(currentApple.GetComponent<HandGrabInteractable>());
     }
     
     
-    // TODO: Create a new spawning algorithm.
     /// <summary>
     /// Compute the next spawn point.
     /// </summary>
     Vector3 ComputeNextTargetPosition()
     {
-        //Vector2 screenBounds = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, Camera.main.transform.position.z));
-        float x;
-
         // TODO: Implement Bound Only logic after min/max arm rotation is properly established.
-        //if (boundOnly)
-        //{
-        //    counter++;
+        //Vector2 screenBounds = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, Camera.main.transform.position.z));
+        //if (boundOnly) {}
 
-        //    if (counter % 2 == 1)
-        //    {
-        //        x = -1f;
-        //    }
-        //    else
-        //    {
-        //        x = 1f;
-        //    }
-        //}
-
-        
+        Vector3 targetPosition;
         if (counter % 2 == 1)
         {
-            x = -1f;
+            targetPosition = spawnTransformLeft.position;
         }
         else
         {
-            x = 1f;
+            targetPosition = spawnTransformRight.position;
         }
 
         counter++;
-        return new Vector3(x, 2f, 0.5f);
+        return targetPosition;
     }
 
 
@@ -106,12 +92,11 @@ public class VRAppleSpawner : Singleton<VRAppleSpawner>
     /// Spawns the next apple, slowly fading it into existence, then has it fall.
     /// </summary>
     /// <param name="position">Position to spawn the next apple</param>
-    IEnumerator DelaySpawnRoutine(Vector3 position)
+    IEnumerator DelaySpawnRoutine(GameObject apple)
     {
-        currentApple = Instantiate(applePrefab, position, Quaternion.identity);
         currentApple.GetComponent<Rigidbody>().useGravity = false;
-
         StartCoroutine(currentApple.GetComponent<VRApple>().FadeIn(spawnLag));
+
         yield return new WaitForSeconds(spawnLag);
 
         currentApple.GetComponent<Rigidbody>().useGravity = true;

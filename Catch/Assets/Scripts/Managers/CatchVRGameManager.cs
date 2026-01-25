@@ -1,3 +1,4 @@
+using Oculus.Interaction.HandGrab;
 using System;
 using UnityEngine;
 using static OVRHaptics;
@@ -29,9 +30,13 @@ public class CatchVRGameManager : Singleton<CatchVRGameManager>
     public float MaxArmRotation => maxArmRotation;
     public float MinArmRotation => minArmRotation;
     public float FruitLifespan => fruitLifespan;
+    public float SpawnInterval => spawnInterval;
     #endregion
 
     #region ----- Events -----
+    public static event Action<HandGrabInteractable> OnSpawnApple;
+    public static event Action<bool> OnScoreUpdate;
+    public static event Action OnHoveringBasket;
     #endregion
 
     #region ----- Unity Lifecycle Functions -----
@@ -84,6 +89,27 @@ public class CatchVRGameManager : Singleton<CatchVRGameManager>
 
         if (isSuccessful) ScoreManager.Instance.AddScore();
         else ScoreManager.Instance.AddMiss();
+
+        OnScoreUpdate?.Invoke(isSuccessful);
+    }
+
+    /// <summary>
+    /// Notify all subscribers to OnSpawnApple that the Apple has been spawned.
+    /// </summary>
+    /// <param name="interactable">A HandGrabInteractable reference</param>
+    public static void HandleSpawnApple(HandGrabInteractable interactable)
+    {
+        OnSpawnApple?.Invoke(interactable);
+    }
+
+
+    /// <summary>
+    /// Notify all subscribers to OnHoveringBasket that the fruit object is now
+    /// over the basket.
+    /// </summary>
+    public static void HandleBasketHover()
+    {
+        OnHoveringBasket?.Invoke();
     }
     #endregion
 }

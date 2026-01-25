@@ -1,12 +1,7 @@
 using System.Collections;
 using UnityEngine;
 
-using Oculus.Interaction.Grab;
-using Oculus.Interaction.GrabAPI;
-using Oculus.Interaction.Input;
-
-[RequireComponent(typeof(Collider), typeof(Renderer), typeof(Rigidbody))]
-[RequireComponent(typeof(Transform))]
+[RequireComponent(typeof(Collider), typeof(Renderer), typeof(Transform))]
 public class VRApple : MonoBehaviour
 {
     #region ----- Class Variables ------
@@ -16,10 +11,10 @@ public class VRApple : MonoBehaviour
     // State Variables
     private float appleLifespan;
     private bool isHeld = false;
+    private GameObject referenceHand;
 
     // Component References
     private Vector3 boxCenter;
-    private Rigidbody rb;
     private GameObject basket;
     #endregion
 
@@ -30,7 +25,6 @@ public class VRApple : MonoBehaviour
         appleLifespan = CatchVRGameManager.Instance.FruitLifespan;
 
         // Get Component References
-        rb = gameObject.GetComponent<Rigidbody>();
         basket = GameObject.Find("Basket");
         boxCenter = transform.position;
 
@@ -40,34 +34,20 @@ public class VRApple : MonoBehaviour
 
     private void Update()
     {
-        CheckAppleHeldState();
-    }
+        if (isHeld && IsTargetOverBasket()) ReleaseObject();
+        if (isHeld && !IsTargetOverBasket()) FollowHand();
 
-
-    void FixedUpdate()
-    {
-        if (isHeld && !IsTargetOverBasket())
-        {
-            rb.useGravity = false;
-            FollowController();
-        }
-        else
-        {
-            rb.useGravity = true;
-        }
-    }
-
-
-    private void OnDisable()
-    {
-        if (ScoreManager.Instance != null) ScoreManager.Instance.AddMiss(); // Decrement user score.
-        Destroy(gameObject);
+        if (transform.position.y < -1) TimeoutApple();
     }
 
 
     private void OnCollisionEnter(Collision collision)
     {
         if (collision.collider.gameObject.name == "Basket") DespawnApple(true);
+        if (!isHeld && collision.collider.gameObject.name == "LeftHand") AttachToHand(collision.collider.gameObject);
+        if (!isHeld && collision.collider.gameObject.name == "RightHand") AttachToHand(collision.collider.gameObject);
+
+        if (isVerbose) Debug.Log($"[VRApple] Collision with {collision.gameObject.name} detected");
     }
     #endregion
 
@@ -99,42 +79,34 @@ public class VRApple : MonoBehaviour
     }
 
 
-    /// <summary>
-    /// checks to see if the apple is considered held or not and sets isHeld accordingly.
-    /// </summary>
-    void CheckAppleHeldState()
-    {
-        if (IsTargetOverBasket())
-        {
-            isHeld = false;
-            return;
-        }
-        // TODO: If the apple is overlapping with the hands, set isHeld to true;
-        else if (false)
-        {
-
-        }
-        else
-        {
-            isHeld = false;
-        }
-        
-    }
-
-
-    /// <summary>
-    /// Helper function to have this gameObject follow the controller.
-    /// </summary>
-    void FollowController()
-    {
-        // TODO: Find the controller's position and update the object's position to it.
-    }
-
-
     void TimeoutApple()
     {
         if (isVerbose) Debug.Log("[VRApple] Apple has timed out.");
         DespawnApple(false);
+    }
+    #endregion
+
+    #region ------ MetaSDK Interactions -----
+    private void ReleaseObject()
+    {
+        CatchVRGameManager.HandleBasketHover();
+    }
+
+    private void AttachToHand(GameObject hand)
+    {
+        isHeld = true;
+        referenceHand = hand;
+    }
+
+    private void FollowHand()
+    {
+        if (referenceHand == null)
+        {
+            Debug.LogError("[VRApple] Reference Hand not found");
+            return;
+        }
+
+        transform.position = referenceHand.transform.position;
     }
     #endregion
 
