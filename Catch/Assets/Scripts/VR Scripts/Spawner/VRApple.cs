@@ -106,7 +106,7 @@ public class VRApple : MonoBehaviour
             return;
         }
 
-        transform.position = referenceHand.transform.position;
+        transform.position = referenceHand.transform.position + new Vector3(0, 0, 0.1f);
     }
     #endregion
 

@@ -34,9 +34,16 @@ public class VRAppleSpawner : Singleton<VRAppleSpawner>
     // Start is called before the first frame update
     void Start()
     {
-        if (CatchVRGameManager.Instance != null) spawnLag = CatchVRGameManager.Instance.SpawnInterval;
+        if (CatchVRGameManager.Instance != null)
+        {
+            spawnLag = CatchVRGameManager.Instance.SpawnInterval;
+            float minArmRotation = CatchVRGameManager.Instance.MinArmRotation;
+            float maxArmRotation = CatchVRGameManager.Instance.MaxArmRotation;
+            // TODO: Update the JSON so that it can properly take in a valid world position
+            //spawnTransformLeft.position = new Vector3(minArmRotation, 0);
+            //spawnTransformRight.position = new Vector3(maxArmRotation, 0);
+        }
     }
-
 
     // Update is called once per frame
     void Update()

@@ -1,7 +1,6 @@
 using Oculus.Interaction.HandGrab;
 using System;
 using UnityEngine;
-using static OVRHaptics;
 
 public class CatchVRGameManager : Singleton<CatchVRGameManager>
 {
@@ -22,6 +21,9 @@ public class CatchVRGameManager : Singleton<CatchVRGameManager>
     private float ROMScale;
     private float maxArmRotation;
     private float minArmRotation;
+
+    private float maxArmRotationTracked;
+    private float minArmRotationTracked;
     #endregion
 
     #region ----- Public Getters -----
@@ -45,6 +47,11 @@ public class CatchVRGameManager : Singleton<CatchVRGameManager>
     {
         base.Awake();
         LoadGameConfigJSON();
+    }
+
+    private void Update()
+    {
+        
     }
     #endregion
 
