@@ -5,6 +5,9 @@ using UnityEngine;
 public class CatchVRGameManager : Singleton<CatchVRGameManager>
 {
     #region ----- Class Variables -----
+    [Header("Required Components")]
+    [SerializeField] GameObject rightController;
+
     [Header("Game Configs")]
     [Tooltip("Seconds in between each fruit spawn.")]
     [SerializeField][Range(0.0f, 12.0f)] float spawnInterval = 8f;
@@ -81,7 +84,7 @@ public class CatchVRGameManager : Singleton<CatchVRGameManager>
     }
     #endregion
 
-    #region ----- Public Variables -----
+    #region ----- Public Handlers -----
     /// <summary>
     /// Handles the scoring for the game.
     /// </summary>

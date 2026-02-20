@@ -230,6 +230,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bdce79529ca3bf244918c47d722346a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::VRApple
+  failClip: {fileID: 8300000, guid: 7497c355a5626a64695f83f89c0fc1df, type: 3}
+  passClip: {fileID: 8300000, guid: 7f090725e5dff8e4cba7bd5be4827cb8, type: 3}
   isVerbose: 1
 --- !u!114 &252362220135963540
 MonoBehaviour:

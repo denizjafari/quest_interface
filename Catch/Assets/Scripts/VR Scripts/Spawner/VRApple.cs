@@ -5,6 +5,9 @@ using UnityEngine;
 public class VRApple : MonoBehaviour
 {
     #region ----- Class Variables ------
+    [SerializeField] AudioClip failClip;
+    [SerializeField] AudioClip passClip;
+
     [Header("Debug")]
     [SerializeField] bool isVerbose = false;
 
@@ -59,8 +62,23 @@ public class VRApple : MonoBehaviour
     /// <param name="isScoring">True if success, false otherwise.</param>
     void DespawnApple(bool isScoring)
     {
+        PlaySFX(isScoring);
+
         CatchVRGameManager.HandleScoreUpdate(isScoring);
         Destroy(gameObject);
+    }
+
+
+    void PlaySFX(bool isScoring)
+    {
+        if (isScoring)
+        {
+            AudioSource.PlayClipAtPoint(passClip, gameObject.transform.position);
+        }
+        else
+        {
+            AudioSource.PlayClipAtPoint(failClip, gameObject.transform.position);
+        }
     }
 
 

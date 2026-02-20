@@ -2,27 +2,16 @@ using UnityEngine;
 using UnityEngine.Networking;
 using System.Collections;
 
-public class ScoreManager : MonoBehaviour
+public class ScoreManager : Singleton<ScoreManager>
 {
-    public static ScoreManager Instance; // Static class for easy access.
-
     // Some boilerplate to make these 2 variables static.
     public int Score { get; private set; }
     public int Missed { get; private set; }
     public string url; // This variable contains a url that records which route to send game event information.
 
-    void Awake()
+    protected override void Awake()
     {
-        // Boilerplate for static class.
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
+        base.Awake(); // Boilerplate for static class.
 
         // Based on controller config, set appropriate route.
         ControllerConfig config = Helper.LoadControllerConfig();
