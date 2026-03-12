@@ -6,7 +6,8 @@ public class CatchVRGameManager : Singleton<CatchVRGameManager>
 {
     #region ----- Class Variables -----
     [Header("Required Components")]
-    [SerializeField] GameObject rightController;
+    [SerializeField] GameObject rightHandVisual;
+    [SerializeField] GameObject leftHandVisual;
 
     [Header("Game Configs")]
     [Tooltip("Seconds in between each fruit spawn.")]
@@ -25,8 +26,8 @@ public class CatchVRGameManager : Singleton<CatchVRGameManager>
     private float maxArmRotation;
     private float minArmRotation;
 
-    private float maxArmRotationTracked;
-    private float minArmRotationTracked;
+    private float maxArmXPosition = 0.3f; // Right Max
+    private float minArmXPosition = -0.3f; // Right Min
     #endregion
 
     #region ----- Public Getters -----
@@ -36,6 +37,13 @@ public class CatchVRGameManager : Singleton<CatchVRGameManager>
     public float MinArmRotation => minArmRotation;
     public float FruitLifespan => fruitLifespan;
     public float SpawnInterval => spawnInterval;
+
+    // TEMP
+    public float MaxArmXPosition => maxArmXPosition;
+    public float MinArmXPosition => minArmXPosition;
+
+    public Transform LeftHandPosition => leftHandVisual.transform;
+    public Transform RightHandPosition => rightHandVisual.transform;
     #endregion
 
     #region ----- Events -----
@@ -54,7 +62,7 @@ public class CatchVRGameManager : Singleton<CatchVRGameManager>
 
     private void Update()
     {
-        
+        CheckMinMaxRotation();
     }
     #endregion
 
@@ -80,6 +88,27 @@ public class CatchVRGameManager : Singleton<CatchVRGameManager>
         {
             maxArmRotation = 1f * Camera.main.orthographicSize * Camera.main.aspect * ROMScale;
             minArmRotation = -1f * Camera.main.orthographicSize * Camera.main.aspect * ROMScale;
+        }
+    }
+
+    /// <summary>
+    /// Check the current min/max position and update if there is a new min/max
+    /// </summary>
+    void CheckMinMaxRotation()
+    {
+        if (rightHandVisual == null) return;
+
+        if (minArmXPosition > RightHandPosition.position.x &&
+            Math.Abs(minArmXPosition - RightHandPosition.position.x) > 0.05)
+        {
+            minArmXPosition = RightHandPosition.position.x;
+            if (isVerbose) Debug.Log($"[CatchVRGameManager] Updated min X: {minArmXPosition}");
+        }
+        if (maxArmXPosition < RightHandPosition.position.x &&
+            Math.Abs(maxArmXPosition - RightHandPosition.position.x) > 0.05)
+        { 
+            maxArmXPosition = RightHandPosition.position.x;
+            if (isVerbose) Debug.Log($"[CatchVRGameManager] Updated max X: {maxArmXPosition}");
         }
     }
     #endregion

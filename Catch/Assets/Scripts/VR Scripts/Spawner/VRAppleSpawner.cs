@@ -37,8 +37,6 @@ public class VRAppleSpawner : Singleton<VRAppleSpawner>
         if (CatchVRGameManager.Instance != null)
         {
             spawnLag = CatchVRGameManager.Instance.SpawnInterval;
-            float minArmRotation = CatchVRGameManager.Instance.MinArmRotation;
-            float maxArmRotation = CatchVRGameManager.Instance.MaxArmRotation;
             // TODO: Update the JSON so that it can properly take in a valid world position
             //spawnTransformLeft.position = new Vector3(minArmRotation, 0);
             //spawnTransformRight.position = new Vector3(maxArmRotation, 0);
@@ -76,20 +74,21 @@ public class VRAppleSpawner : Singleton<VRAppleSpawner>
     /// </summary>
     Vector3 ComputeNextTargetPosition()
     {
-        // TODO: Implement Bound Only logic after min/max arm rotation is properly established.
-        //Vector2 screenBounds = Camera.main.ScreenToWorldPoint(new Vector3(Screen.width, Screen.height, Camera.main.transform.position.z));
-        //if (boundOnly) {}
-
         Vector3 targetPosition;
         if (counter % 2 == 1)
         {
+            float minArmXPosition = CatchVRGameManager.Instance.MinArmXPosition;
+            spawnTransformLeft.position = new(minArmXPosition, spawnTransformLeft.position.y, spawnTransformLeft.position.z);
             targetPosition = spawnTransformLeft.position;
         }
         else
         {
+            float maxArmXPosition = CatchVRGameManager.Instance.MaxArmXPosition;
+            spawnTransformRight.position = new(maxArmXPosition, spawnTransformRight.position.y, spawnTransformRight.position.z);
             targetPosition = spawnTransformRight.position;
         }
 
+        if (isVerbose) Debug.Log($"[VRAppleSpawner] Target X location: {targetPosition.x}");
         counter++;
         return targetPosition;
     }
