@@ -28,19 +28,19 @@ public class CatchVRGameManager : Singleton<CatchVRGameManager>
 
     private float maxArmXPosition = 0.3f; // Right Max
     private float minArmXPosition = -0.3f; // Right Min
+    private float armYPosition = 1.4f;
     #endregion
 
     #region ----- Public Getters -----
     public float ScalingFactor => scalingFactor;
     public bool IsBoundsOnly => isBoundsOnly;
-    public float MaxArmRotation => maxArmRotation;
-    public float MinArmRotation => minArmRotation;
     public float FruitLifespan => fruitLifespan;
     public float SpawnInterval => spawnInterval;
 
     // TEMP
     public float MaxArmXPosition => maxArmXPosition;
     public float MinArmXPosition => minArmXPosition;
+    public bool IsOutOfBounds => IsHandOutOfBounds();
 
     public Transform LeftHandPosition => leftHandVisual.transform;
     public Transform RightHandPosition => rightHandVisual.transform;
@@ -62,7 +62,12 @@ public class CatchVRGameManager : Singleton<CatchVRGameManager>
 
     private void Update()
     {
-        CheckMinMaxRotation();
+        CheckMinMaxPosition();
+    }
+
+    private void OnApplicationPause(bool pause)
+    {
+        // TODO: Add player Re-centering Logic
     }
     #endregion
 
@@ -94,22 +99,36 @@ public class CatchVRGameManager : Singleton<CatchVRGameManager>
     /// <summary>
     /// Check the current min/max position and update if there is a new min/max
     /// </summary>
-    void CheckMinMaxRotation()
+    void CheckMinMaxPosition()
     {
         if (rightHandVisual == null) return;
 
         if (minArmXPosition > RightHandPosition.position.x &&
-            Math.Abs(minArmXPosition - RightHandPosition.position.x) > 0.05)
+            Math.Abs(minArmXPosition - RightHandPosition.position.x) > 0.05f)
         {
             minArmXPosition = RightHandPosition.position.x;
             if (isVerbose) Debug.Log($"[CatchVRGameManager] Updated min X: {minArmXPosition}");
         }
         if (maxArmXPosition < RightHandPosition.position.x &&
-            Math.Abs(maxArmXPosition - RightHandPosition.position.x) > 0.05)
+            Math.Abs(maxArmXPosition - RightHandPosition.position.x) > 0.05f)
         { 
             maxArmXPosition = RightHandPosition.position.x;
             if (isVerbose) Debug.Log($"[CatchVRGameManager] Updated max X: {maxArmXPosition}");
         }
+    }
+
+
+    /// <summary>
+    /// Checks if main hand is out of bounds.
+    /// </summary>
+    /// <returns>Boolean representing whether hand is out of bounds.</returns>
+    private bool IsHandOutOfBounds()
+    {
+        if (Math.Abs(RightHandPosition.position.y - armYPosition) > 0.3f) return true;
+
+        // TODO: Add a horizontal boundary check.
+
+        return false;
     }
     #endregion
 

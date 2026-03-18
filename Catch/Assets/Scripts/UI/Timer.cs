@@ -1,14 +1,12 @@
-
-using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
-[RequireComponent(typeof(TMP_Text))]
 public class Timer : MonoBehaviour
 {
     [SerializeField] TMP_Text timerText;
+    [SerializeField] Image radialCircle;
     [SerializeField] float maxSeconds = 300f;
-    [SerializeField] string header = "Timer:";
 
     private float remainingTime;
 
@@ -21,10 +19,28 @@ public class Timer : MonoBehaviour
 
     void Update()
     {
+        HandleCountdown();
+        UpdateRadialCircle();
+    }
+
+    void UpdateRadialCircle()
+    {
+        radialCircle.fillAmount = remainingTime / maxSeconds;
+    }
+
+
+    void HandleCountdown()
+    {
         if (remainingTime <= 0) return;
+
+        if (CatchVRGameManager.Instance.IsOutOfBounds)
+        {
+            timerText.text = $"You are out of bounds!";
+            return;
+        }
 
         // Only count down when time is above 0
         remainingTime -= Time.deltaTime;
-        timerText.text = $"{header} {(int)remainingTime / 60}:{(int)remainingTime % 60}";
-    }
+        timerText.text = $"{(int)remainingTime / 60}:{(int)remainingTime % 60}";
+    }    
 }

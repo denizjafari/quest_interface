@@ -48,4 +48,15 @@ public class Helper : MonoBehaviour // This script contains helper functions to 
 
         File.WriteAllText(path, result);
     }
+
+    /// <summary>
+    /// Write the positional data procured for calibration in Catch
+    /// </summary>
+    public static void WritePositionalData(float minX, float maxX, float modalY)
+    {
+        string path = "game_config/catch_calibration.json";
+        string message = $"minX: {minX}, maxX: {maxX}, modalY: {modalY}";
+        
+        File.WriteAllText(path, message);
+    }
 }

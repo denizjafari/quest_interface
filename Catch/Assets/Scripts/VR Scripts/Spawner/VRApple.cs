@@ -13,12 +13,14 @@ public class VRApple : MonoBehaviour
 
     // State Variables
     private float appleLifespan;
+    private float appleAge;
     private bool isHeld = false;
     private GameObject referenceHand;
 
     // Component References
     private Vector3 boxCenter;
     private GameObject basket;
+    private Rigidbody rb;
     #endregion
 
     #region ----- Unity Base Functions -----
@@ -30,8 +32,7 @@ public class VRApple : MonoBehaviour
         // Get Component References
         basket = GameObject.Find("Basket");
         boxCenter = transform.position;
-
-        Invoke(nameof(TimeoutApple), appleLifespan);
+        rb = GetComponent<Rigidbody>();
     }
 
 
@@ -39,6 +40,20 @@ public class VRApple : MonoBehaviour
     {
         if (isHeld && IsTargetOverBasket()) ReleaseObject();
         if (isHeld && !IsTargetOverBasket()) FollowHand();
+
+        if (CatchVRGameManager.Instance.IsOutOfBounds)
+        {
+            rb.useGravity = false;
+        }
+        else
+        {
+            rb.useGravity = true;
+            appleAge += Time.deltaTime;
+            if (appleAge >= appleLifespan)
+            {
+                TimeoutApple();
+            }
+        }
 
         if (transform.position.y < -1) TimeoutApple();
     }
