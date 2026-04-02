@@ -1,8 +1,6 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using Newtonsoft.Json;
 using System.IO;
-using System;
+using UnityEngine;
 
 public class Helper : MonoBehaviour // This script contains helper functions to read and write to file system.
 {
@@ -52,11 +50,21 @@ public class Helper : MonoBehaviour // This script contains helper functions to 
     /// <summary>
     /// Write the positional data procured for calibration in Catch
     /// </summary>
-    public static void WritePositionalData(float minX, float maxX, float modalY)
+    public static void WritePositionalData(float minX, float maxX, float modalY, float maxZ)
     {
         string path = "game_config/catch_calibration.json";
-        string message = $"minX: {minX}, maxX: {maxX}, modalY: {modalY}";
-        
+        PositionalConfig config = new(minX, maxX, modalY, maxZ);
+        string message = JsonConvert.SerializeObject(config);
         File.WriteAllText(path, message);
+    }
+
+
+    public static PositionalConfig LoadPositionalData()
+    {
+        string path = "game_config/catch_calibration.json";
+        string jsonString = File.ReadAllText(path);
+
+        PositionalConfig config = JsonConvert.DeserializeObject<PositionalConfig>(jsonString);
+        return config;
     }
 }

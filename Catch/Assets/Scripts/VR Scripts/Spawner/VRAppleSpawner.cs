@@ -37,9 +37,9 @@ public class VRAppleSpawner : Singleton<VRAppleSpawner>
         if (CatchVRGameManager.Instance != null)
         {
             spawnLag = CatchVRGameManager.Instance.SpawnInterval;
-            // TODO: Update the JSON so that it can properly take in a valid world position
-            //spawnTransformLeft.position = new Vector3(minArmRotation, 0);
-            //spawnTransformRight.position = new Vector3(maxArmRotation, 0);
+
+            spawnTransformLeft.position = new Vector3(CatchVRGameManager.Instance.MinArmXPosition, spawnTransformLeft.position.y, CatchVRGameManager.Instance.MaxArmZPosition);
+            spawnTransformRight.position = new Vector3(CatchVRGameManager.Instance.MaxArmXPosition, spawnTransformLeft.position.y, CatchVRGameManager.Instance.MaxArmZPosition);
         }
     }
 

@@ -1,5 +1,6 @@
 using Oculus.Interaction.HandGrab;
 using System;
+using Unity.XR.CoreUtils;
 using UnityEngine;
 
 public class CatchVRGameManager : Singleton<CatchVRGameManager>
@@ -8,6 +9,7 @@ public class CatchVRGameManager : Singleton<CatchVRGameManager>
     [Header("Required Components")]
     [SerializeField] GameObject rightHandVisual;
     [SerializeField] GameObject leftHandVisual;
+    [SerializeField] GameObject cameraRig;
 
     [Header("Game Configs")]
     [Tooltip("Seconds in between each fruit spawn.")]
@@ -23,12 +25,12 @@ public class CatchVRGameManager : Singleton<CatchVRGameManager>
     private float scalingFactor;
     private bool isBoundsOnly;
     private float ROMScale;
-    private float maxArmRotation;
-    private float minArmRotation;
 
     private float maxArmXPosition = 0.3f; // Right Max
     private float minArmXPosition = -0.3f; // Right Min
     private float armYPosition = 1.4f;
+
+    private PositionalConfig positionalConfig;
     #endregion
 
     #region ----- Public Getters -----
@@ -41,6 +43,7 @@ public class CatchVRGameManager : Singleton<CatchVRGameManager>
     public float MaxArmXPosition => maxArmXPosition;
     public float MinArmXPosition => minArmXPosition;
     public bool IsOutOfBounds => IsHandOutOfBounds();
+    public float MaxArmZPosition => positionalConfig.maxZ;
 
     public Transform LeftHandPosition => leftHandVisual.transform;
     public Transform RightHandPosition => rightHandVisual.transform;
@@ -67,7 +70,7 @@ public class CatchVRGameManager : Singleton<CatchVRGameManager>
 
     private void OnApplicationPause(bool pause)
     {
-        // TODO: Add player Re-centering Logic
+        cameraRig.transform.position = new Vector3(0, 0.5f, -0.9f);
     }
     #endregion
 
@@ -82,18 +85,10 @@ public class CatchVRGameManager : Singleton<CatchVRGameManager>
         spawnInterval = config.spawnLag != 0 ? config.spawnLag : spawnInterval;
         //fruitLifespan = ControllerListener.Instance.selfDestroyTime ?? fruitLifespan;
 
-        // TODO: Fix this shoulder rotation calculation for VR.
-        ROMData rotationConfig = Helper.LoadShoulderRotationROM();
-        if (rotationConfig != null)
-        {
-            maxArmRotation = rotationConfig.max / 90f * Camera.main.orthographicSize * Camera.main.aspect * ROMScale;
-            minArmRotation = rotationConfig.min / 90f * Camera.main.orthographicSize * Camera.main.aspect * ROMScale;
-        }
-        else
-        {
-            maxArmRotation = 1f * Camera.main.orthographicSize * Camera.main.aspect * ROMScale;
-            minArmRotation = -1f * Camera.main.orthographicSize * Camera.main.aspect * ROMScale;
-        }
+        // Get the calibration data
+        positionalConfig = Helper.LoadPositionalData();
+        minArmXPosition = positionalConfig.minX;
+        maxArmXPosition = positionalConfig.maxX;
     }
 
     /// <summary>
@@ -170,4 +165,22 @@ public class CatchVRGameManager : Singleton<CatchVRGameManager>
         OnHoveringBasket?.Invoke();
     }
     #endregion
+}
+
+[System.Serializable]
+public class PositionalConfig
+{
+    public float minX;
+    public float maxX;
+    public float maxY;
+    public float modalY;
+    public float maxZ;
+
+    public PositionalConfig(float minX, float maxX, float maxY, float maxZ)
+    {
+        this.minX = minX;
+        this.maxX = maxX;
+        this.maxY = maxY;
+        this.maxZ = maxZ;
+    }
 }
