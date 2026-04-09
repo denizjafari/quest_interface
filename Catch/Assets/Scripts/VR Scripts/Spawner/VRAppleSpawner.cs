@@ -61,7 +61,9 @@ public class VRAppleSpawner : Singleton<VRAppleSpawner>
         if (isVerbose) Debug.Log("[VRAppleSpawner] Spawning Apple");
 
         nextTargetPosition = ComputeNextTargetPosition();
-        currentApple = Instantiate(applePrefab, nextTargetPosition, Quaternion.identity);
+        currentApple = Instantiate(applePrefab, 
+            nextTargetPosition, 
+            Quaternion.identity);
         isSpawning = false;
 
         //StartCoroutine(DelaySpawnRoutine(currentApple));
@@ -75,20 +77,21 @@ public class VRAppleSpawner : Singleton<VRAppleSpawner>
     Vector3 ComputeNextTargetPosition()
     {
         Vector3 targetPosition;
+        float currentZPosition = CatchVRGameManager.Instance.MaxArmZPosition - 0.5f; // TODO: Android Build bug
         if (counter % 2 == 1)
         {
             float minArmXPosition = CatchVRGameManager.Instance.MinArmXPosition;
-            spawnTransformLeft.position = new(minArmXPosition, spawnTransformLeft.position.y, spawnTransformLeft.position.z);
+            spawnTransformLeft.position = new(minArmXPosition, spawnTransformLeft.position.y, currentZPosition);
             targetPosition = spawnTransformLeft.position;
         }
         else
         {
             float maxArmXPosition = CatchVRGameManager.Instance.MaxArmXPosition;
-            spawnTransformRight.position = new(maxArmXPosition, spawnTransformRight.position.y, spawnTransformRight.position.z);
+            spawnTransformRight.position = new(maxArmXPosition, spawnTransformRight.position.y, currentZPosition);
             targetPosition = spawnTransformRight.position;
         }
 
-        if (isVerbose) Debug.Log($"[VRAppleSpawner] Target X location: {targetPosition.x}");
+        if (isVerbose) Debug.Log($"[VRAppleSpawner] Target X location: {targetPosition.x}, Z location: {currentZPosition}");
         counter++;
         return targetPosition;
     }

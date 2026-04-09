@@ -10,6 +10,7 @@ public class CatchVRGameManager : Singleton<CatchVRGameManager>
     [SerializeField] GameObject rightHandVisual;
     [SerializeField] GameObject leftHandVisual;
     [SerializeField] GameObject cameraRig;
+    [SerializeField] GameObject basket;
 
     [Header("Game Configs")]
     [Tooltip("Seconds in between each fruit spawn.")]
@@ -28,7 +29,8 @@ public class CatchVRGameManager : Singleton<CatchVRGameManager>
 
     private float maxArmXPosition = 0.3f; // Right Max
     private float minArmXPosition = -0.3f; // Right Min
-    private float armYPosition = 1.4f;
+    private float armYPosition = 1.4f;  // Where the player should be keeping their hand
+    private float maxArmZPosition = 0f;
 
     private PositionalConfig positionalConfig;
     #endregion
@@ -43,7 +45,7 @@ public class CatchVRGameManager : Singleton<CatchVRGameManager>
     public float MaxArmXPosition => maxArmXPosition;
     public float MinArmXPosition => minArmXPosition;
     public bool IsOutOfBounds => IsHandOutOfBounds();
-    public float MaxArmZPosition => positionalConfig.maxZ;
+    public float MaxArmZPosition => maxArmZPosition;
 
     public Transform LeftHandPosition => leftHandVisual.transform;
     public Transform RightHandPosition => rightHandVisual.transform;
@@ -61,16 +63,16 @@ public class CatchVRGameManager : Singleton<CatchVRGameManager>
     {
         base.Awake();
         LoadGameConfigJSON();
+
+        // Set up game environment
+        basket.transform.position = new 
+            Vector3(basket.transform.position.x, basket.transform.position.y, maxArmZPosition);
     }
 
     private void Update()
     {
         CheckMinMaxPosition();
-    }
-
-    private void OnApplicationPause(bool pause)
-    {
-        cameraRig.transform.position = new Vector3(0, 0.5f, -0.9f);
+        maxArmZPosition = rightHandVisual.transform.position.z; // TODO: Fix the APK bug.
     }
     #endregion
 
@@ -87,8 +89,17 @@ public class CatchVRGameManager : Singleton<CatchVRGameManager>
 
         // Get the calibration data
         positionalConfig = Helper.LoadPositionalData();
-        minArmXPosition = positionalConfig.minX;
-        maxArmXPosition = positionalConfig.maxX;
+        if (positionalConfig != null)
+        {
+            minArmXPosition = positionalConfig.minX;
+            maxArmXPosition = positionalConfig.maxX;
+            armYPosition = positionalConfig.modalY;
+            maxArmZPosition = positionalConfig.maxZ;
+        }
+
+        if (isVerbose) { Debug.Log($"[CatchVRGameManager] " +
+            $"Obtained configs: minX = {positionalConfig.minX}, " +
+            $"maxX = {positionalConfig.maxX}" + $"modalY = {positionalConfig.modalY}"); }
     }
 
     /// <summary>
@@ -172,15 +183,14 @@ public class PositionalConfig
 {
     public float minX;
     public float maxX;
-    public float maxY;
     public float modalY;
     public float maxZ;
 
-    public PositionalConfig(float minX, float maxX, float maxY, float maxZ)
+    public PositionalConfig(float minX, float maxX, float modalY, float maxZ)
     {
         this.minX = minX;
         this.maxX = maxX;
-        this.maxY = maxY;
+        this.modalY = modalY;
         this.maxZ = maxZ;
     }
 }

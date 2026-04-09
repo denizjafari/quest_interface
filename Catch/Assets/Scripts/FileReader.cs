@@ -52,7 +52,12 @@ public class Helper : MonoBehaviour // This script contains helper functions to 
     /// </summary>
     public static void WritePositionalData(float minX, float maxX, float modalY, float maxZ)
     {
-        string path = "game_config/catch_calibration.json";
+        string path = $"{Application.persistentDataPath}/game_config/catch_calibration.json";
+        if (!Directory.Exists($"{Application.persistentDataPath}/game_config"))
+        {
+            Directory.CreateDirectory($"{Application.persistentDataPath}/game_config");
+        }
+
         PositionalConfig config = new(minX, maxX, modalY, maxZ);
         string message = JsonConvert.SerializeObject(config);
         File.WriteAllText(path, message);
@@ -61,7 +66,7 @@ public class Helper : MonoBehaviour // This script contains helper functions to 
 
     public static PositionalConfig LoadPositionalData()
     {
-        string path = "game_config/catch_calibration.json";
+        string path = $"{Application.persistentDataPath}/game_config/catch_calibration.json";
         string jsonString = File.ReadAllText(path);
 
         PositionalConfig config = JsonConvert.DeserializeObject<PositionalConfig>(jsonString);

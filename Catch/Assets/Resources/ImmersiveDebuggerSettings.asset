@@ -24,7 +24,7 @@ MonoBehaviour:
   - AssemblyName: Meta.XR.BuildingBlocks.AIBlocks
     DebugTypes:
     - Meta.XR.BuildingBlocks.AIBlocks.LlmAgentHelper
-  immersiveDebuggerEnabled: 1
+  immersiveDebuggerEnabled: 0
   immersiveDebuggerDisplayAtStartup: 1
   enableOnlyInDebugBuild: 0
   showInspectors: 0

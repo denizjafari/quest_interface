@@ -3907,16 +3907,24 @@ PrefabInstance:
     m_TransformParent: {fileID: 1229241497}
     m_Modifications:
     - target: {fileID: 1134145775097522231, guid: d9c5346f939fcb34f810e6943ea39a4c, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1134145775097522231, guid: d9c5346f939fcb34f810e6943ea39a4c, type: 3}
+      propertyPath: m_LocalScale.y
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1134145775097522231, guid: d9c5346f939fcb34f810e6943ea39a4c, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1134145775097522231, guid: d9c5346f939fcb34f810e6943ea39a4c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1
+      value: 0.8
       objectReference: {fileID: 0}
     - target: {fileID: 1134145775097522231, guid: d9c5346f939fcb34f810e6943ea39a4c, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1134145775097522231, guid: d9c5346f939fcb34f810e6943ea39a4c, type: 3}
       propertyPath: m_LocalRotation.w
@@ -3946,9 +3954,21 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1921799076923177849, guid: d9c5346f939fcb34f810e6943ea39a4c, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 3518554858563420280, guid: d9c5346f939fcb34f810e6943ea39a4c, type: 3}
       propertyPath: m_Name
       value: Timer
+      objectReference: {fileID: 0}
+    - target: {fileID: 3518554858563420280, guid: d9c5346f939fcb34f810e6943ea39a4c, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3707652376991488514, guid: d9c5346f939fcb34f810e6943ea39a4c, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 4876647819208174423, guid: d9c5346f939fcb34f810e6943ea39a4c, type: 3}
       propertyPath: isCheckingOutOfBounds
@@ -17093,7 +17113,7 @@ Camera:
   m_Depth: 0
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 4294967287
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -18561,7 +18581,7 @@ Transform:
   m_GameObject: {fileID: 1175061323}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -3}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -19711,7 +19731,7 @@ MonoBehaviour:
   shape: 0
   curveRadius: 1
   overlapMask: 0
-  overlayType: 1
+  overlayType: 2
   _overlayEnabled: 1
 --- !u!114 &1229241494
 MonoBehaviour:
@@ -19784,7 +19804,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1229241492}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -27646,7 +27666,6 @@ GameObject:
   - component: {fileID: 1690431121}
   - component: {fileID: 1690431124}
   - component: {fileID: 1690431123}
-  - component: {fileID: 1690431122}
   m_Layer: 3
   m_Name: Debug
   m_TagString: Untagged
@@ -27673,22 +27692,6 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 1.75}
   m_SizeDelta: {x: 3, y: 0.7}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1690431122
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1690431120}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8a229f9ca00da1e439af7547948cf103, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Timer
-  timerText: {fileID: 1690431123}
-  radialCircle: {fileID: 0}
-  maxSeconds: 300
-  isCheckingOutOfBounds: 1
 --- !u!114 &1690431123
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -28000,7 +28003,7 @@ Transform:
   m_GameObject: {fileID: 1696957669}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 3}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -30319,7 +30322,7 @@ MonoBehaviour:
   minAppleX: {fileID: 533555336}
   maxAppleX: {fileID: 1265111863}
   currentHand: 1
-  countdown: 10
+  countdown: 5
 --- !u!1001 &1834688016
 PrefabInstance:
   m_ObjectHideFlags: 0

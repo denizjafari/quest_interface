@@ -146,7 +146,7 @@ public class CalibrationManager : MonoBehaviour
     {
         if (rightHandVisual == null) return;
 
-        // Keep the right hand steady for 3 seconds.
+        // Keep the right hand steady for RemainingTime seconds.
         Vector3 rh_position = rightHandVisual.transform.position;
         if (remainingTime <= 0)
         {
@@ -164,8 +164,8 @@ public class CalibrationManager : MonoBehaviour
             helper_tmp.text = "Swing your hand left and right as far as possible.";
             Debug.Log($"[CalibrationManager] State: {state}");
         }
-        if (Math.Abs(rh_position.y - currentY) >= 0.08f ||
-            Math.Abs(rh_position.z - currentZ) >= 0.08f)
+        if (Math.Abs(rh_position.y - currentY) >= 0.05f ||
+            Math.Abs(rh_position.z - currentZ) >= 0.05f)
         {
             if (isVerbose) Debug.Log($"[CalibrationManager] Y/Z position updated. Y: {rh_position.y}, Z: {rh_position.z}\nResetting countdown to {countdown}");
             remainingTime = countdown;
@@ -173,6 +173,8 @@ public class CalibrationManager : MonoBehaviour
             currentY = rh_position.y;
             currentZ = rh_position.z;
 
+            minAppleX.transform.position = new Vector3(minAppleX.transform.position.x, currentY, currentZ);
+            maxAppleX.transform.position = new Vector3(minAppleX.transform.position.x, currentY, currentZ);
 
             remainingTime = countdown;
             if (timer != null) timer.ResetTimer();
